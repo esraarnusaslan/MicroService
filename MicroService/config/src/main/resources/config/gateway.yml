@@ -1,0 +1,21 @@
+eureka:
+  client: # !!! gateway in bir eureka client oldugunu soyluyorum
+    serviceUrl: #!!! bu clientin server i hakkinda bilgi verecegim
+      defaultZone: http://localhost:8097/eureka
+# !!! yukarda discovery server ( register olacagi) portunu soyluyoruz
+
+# !!! butun requestler once gateway e gelecek daha sonra ilgili service
+# kismina gidecegi icin, gateway'e butun servisleri tanitiyoruz:
+spring:
+  cloud:
+    gateway:
+      routes: # !!! yonlendirme kurallarini belirleyecegimi soyluyorum
+        - id: carModule
+          uri: lb://car-service # lb= load balancer --> yuk dagilimi ( yedek server'a yonlendirebilir )
+          predicates:
+            - Path=/car/**
+
+        - id: logModule
+          uri: lb://log-service
+          predicates:
+            - Path=/log/**
